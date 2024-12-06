@@ -6,7 +6,10 @@ import com.finance.model.Transaction;
 import com.finance.model.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,4 +24,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     List<Transaction> findByCategory(Category category);
     List<Transaction> findByCategory(Category category, Pageable pageable);
 
+    Double sumAmountByUserAndTransactionType(User user, Transaction.TransactionType type);
+
+    @Query("SELECT t FROM Transaction t WHERE t.date BETWEEN :startDate AND :endDate")
+    List<Transaction> findTransactionsBetweenDates(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 }
