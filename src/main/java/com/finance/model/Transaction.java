@@ -1,8 +1,6 @@
 package com.finance.model;
 
 import jakarta.persistence.*;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
