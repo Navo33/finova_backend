@@ -16,9 +16,14 @@ public class Category {
     @Size(max = 50, message = "Category name must not exceed 50 characters")
     private String categoryName;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Pattern(regexp = "income|expense", message = "Type must be either 'income' or 'expense'")
-    private String type;
+    private CategoryType categoryType;
+
+    public enum CategoryType {
+        income,
+        expense
+    }
 
     @ManyToOne
     @JoinColumn(name = "userId",nullable = true)
@@ -44,12 +49,12 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public String getType() {
-        return type;
+    public CategoryType getCategoryType() {
+        return categoryType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCategoryType(CategoryType categoryType) {
+        this.categoryType = categoryType;
     }
 
     public User getUser() {
@@ -65,7 +70,7 @@ public class Category {
         return "Category{" +
                 "categoryId=" + categoryId +
                 ", categoryName='" + categoryName + '\'' +
-                ", type='" + type + '\'' +
+                ", categoryType='" + categoryType + '\'' +
                 '}';
     }
 

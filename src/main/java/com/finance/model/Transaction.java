@@ -1,6 +1,8 @@
 package com.finance.model;
 
 import jakarta.persistence.*;
+
+import javax.validation.constraints.DecimalMin;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,10 +22,20 @@ public class Transaction {
     private Category category;
 
     @Column(nullable = false)
+    @DecimalMin(value = "0.0", message = "Amount must be positive")
     private Double amount;
 
     @Column(nullable = false)
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionType transactionType;
+
+    public enum TransactionType {
+        income,
+        expense
+    }
 
     @Column(nullable = false)
     private LocalDateTime date;
