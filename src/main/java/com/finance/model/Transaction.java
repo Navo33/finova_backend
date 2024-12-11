@@ -33,8 +33,8 @@ public class Transaction {
     private TransactionType transactionType;
 
     public enum TransactionType {
-        income,
-        expense
+        INCOME,
+        EXPENSE
     }
 
     @Column(nullable = false)

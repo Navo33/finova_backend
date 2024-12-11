@@ -1,7 +1,7 @@
 package com.finance.model;
 
 import jakarta.persistence.*;
-import javax.validation.constraints.Pattern;
+
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
@@ -21,8 +21,8 @@ public class Category {
     private CategoryType categoryType;
 
     public enum CategoryType {
-        income,
-        expense
+        INCOME,
+        EXPENSE
     }
 
     @ManyToOne
