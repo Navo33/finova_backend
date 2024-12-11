@@ -8,6 +8,7 @@ import com.finance.repository.CategoryRepository;
 import com.finance.repository.TransactionRepository;
 import com.finance.repository.UserRepository;
 
+import jakarta.transaction.InvalidTransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,10 +36,10 @@ public class TransactionService {
     public TransactionDTO addTransaction(TransactionDTO transactionDTO) {
 
         User user = userRepository.findById(transactionDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Category category = categoryRepository.findById(transactionDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
         Transaction transaction = new Transaction();
         transaction.setUser(user);
@@ -53,16 +54,16 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionDTO updateTransaction(TransactionDTO transactionDTO) {
+    public TransactionDTO updateTransaction(TransactionDTO transactionDTO) throws InvalidTransactionException {
 
         Transaction existingTransaction = transactionRepository.findById(transactionDTO.getTransactionId())
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
 
         User user = userRepository.findById(transactionDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Category category = categoryRepository.findById(transactionDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
         existingTransaction.setCategory(category);
         existingTransaction.setAmount(transactionDTO.getAmount());
@@ -71,7 +72,6 @@ public class TransactionService {
         if (existingTransaction.getAmount() <= 0) {
             throw new InvalidTransactionException("Amount must be positive");
         }
-
 
         Transaction updatedTransaction = transactionRepository.save(existingTransaction);
         return convertToDto(updatedTransaction);
@@ -92,15 +92,21 @@ public class TransactionService {
         }
     }
 
-    public class InvalidTransactionException extends RuntimeException {
-        public InvalidTransactionException(String message) {
+    public class UserNotFoundException extends RuntimeException {
+        public UserNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    public class CategoryNotFoundException extends RuntimeException {
+        public CategoryNotFoundException(String message) {
             super(message);
         }
     }
 
     public List<TransactionDTO> getTransactionsByUser(UUID userId, int page, int size, String sortBy) {
 
-         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -114,7 +120,7 @@ public class TransactionService {
 
     public List<TransactionDTO> getTransactionsByDateRange(UUID userId, LocalDateTime start, LocalDateTime end) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         List<Transaction> transactions = transactionRepository.findByUserAndDateBetween(user, start, end);
 
@@ -126,10 +132,10 @@ public class TransactionService {
 
     public List<TransactionDTO> getTransactionsByCategory(UUID userId, UUID categoryId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
         List<Transaction> transactions = transactionRepository.findByUserAndCategory(user, category);
 
@@ -140,7 +146,7 @@ public class TransactionService {
 
     public double calculateTotalByType(UUID userId, Transaction.TransactionType type) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return transactionRepository.sumAmountByUserAndTransactionType(user, type);
     }

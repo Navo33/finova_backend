@@ -10,6 +10,8 @@ import java.util.UUID;
 
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
+    Optional<Category> findByIdAndUser(UUID id, User user);
+
     List<Category> findByCategoryType(Category.CategoryType categoryType);
     List<Category> findByUser(User user);
     List<Category> findByUserAndCategoryType(User user, Category.CategoryType categoryType);
@@ -19,5 +21,8 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
     List<Category> findByUserOrderByCategoryNameAsc(User user);
     List<Category> findByUserAndCategoryTypeOrderByCategoryNameAsc(User user, Category.CategoryType categoryType);
+
+    Optional<Category> findByUserAndCategoryName(User user, String categoryName);
+
 
 }
