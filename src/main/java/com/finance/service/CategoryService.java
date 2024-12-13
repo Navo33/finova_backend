@@ -5,6 +5,7 @@ import com.finance.model.Category;
 import com.finance.model.User;
 import com.finance.repository.CategoryRepository;
 import com.finance.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +68,14 @@ public class CategoryService {
         Category updatedCategory = categoryRepository.save(existingcategory);
         return convertToDto(updatedCategory);
 
+    }
+
+    @Transactional
+    public void deleteCategory(UUID categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+
+        categoryRepository.delete(category);
     }
 
     public class CategoryAlreadyExistsException extends RuntimeException {
