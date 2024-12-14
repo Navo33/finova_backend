@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
 public class User {
@@ -17,15 +18,15 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    @Size(min = 8, message = "Password must not be less than 8 characters")
+    @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
     private String password;
 
     @Column(nullable = true)
-    @Size(max = 50, message = "First name must not exceed 50 characters")
+    @Size(max = 20, message = "First name must not exceed 20 characters")
     private String firstName;
 
     @Column(nullable = true)
-    @Size(max = 50, message = "Last name must not exceed 50 characters")
+    @Size(max = 20, message = "Last name must not exceed 20 characters")
     private String lastName;
 
     @Column(nullable = false, unique = true)
@@ -35,6 +36,15 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "roleId", nullable = false)
     private Role role;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
 
     // Default Constructor
     public User() {}
@@ -48,11 +58,11 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUsername() {
+    public String getUserName() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUserName(String username) {
         this.username = username;
     }
 
@@ -94,6 +104,14 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override
