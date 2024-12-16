@@ -1,5 +1,7 @@
 package com.finance.dto;
 
+import com.finance.model.Transaction;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -18,7 +20,7 @@ public class TransactionDTO {
     @DecimalMin(value = "0.0", message = "Amount must be positive")
     private Double amount;
 
-    @NotNull(message = "Description os required")
+    @NotNull(message = "Description is required")
     private String description;
 
     private LocalDateTime date;
@@ -82,5 +84,6 @@ public class TransactionDTO {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
 
 }

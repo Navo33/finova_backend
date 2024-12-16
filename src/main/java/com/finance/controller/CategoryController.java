@@ -36,13 +36,10 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> updateCategory(
             @PathVariable UUID categoryId,
             @Valid @RequestBody CategoryDTO categoryDTO) {
-        try {
-            categoryDTO.setCategoryId(categoryId);
-            CategoryDTO updatedCategory = categoryService.updateCategory(categoryDTO);
-            return ResponseEntity.ok(updatedCategory);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+
+        categoryDTO.setCategoryId(categoryId);
+        CategoryDTO updatedCategory = categoryService.updateCategory(categoryDTO);
+        return ResponseEntity.ok(updatedCategory);
     }
 
     @DeleteMapping("/{categoryId}")
@@ -60,7 +57,7 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/user/{userId}/categoryType/{categoryTpe}")
+    @GetMapping("/user/{userId}/categoryType/{categoryType}")
     @Operation(summary = "Get categories by categoryType", description = "Retrieves categories for a user in a specific category type")
     public ResponseEntity<List<CategoryDTO>> getCategoriesByCategoryType(
             @PathVariable UUID userId,
