@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Transaction {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID transactionId;
 
     @ManyToOne

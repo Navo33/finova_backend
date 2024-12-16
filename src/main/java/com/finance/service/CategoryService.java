@@ -30,12 +30,11 @@ public class CategoryService {
         User user = userRepository.findById(categoryDTO.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        if (categoryRepository.existsByUserAndCategoryTypeAndCategoryName(user, categoryDTO.getCategoryType(), categoryDTO.getCategoryName())) {
+        if (categoryRepository.existsByUserAndCategoryTypeAndCategoryName(
+                user,
+                categoryDTO.getCategoryType(),
+                categoryDTO.getCategoryName())) {
             throw new CategoryAlreadyExistsException("Category already exists");
-        }
-
-        if (categoryDTO.getCategoryName() == null || categoryDTO.getCategoryName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be empty");
         }
 
         Category category = new Category();
@@ -44,7 +43,6 @@ public class CategoryService {
         category.setCategoryType(categoryDTO.getCategoryType());
 
         Category savedCategory = categoryRepository.save(category);
-
         return convertToDto(savedCategory);
 
     }
