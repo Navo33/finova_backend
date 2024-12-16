@@ -1,7 +1,6 @@
 package com.finance.service;
 
 import com.finance.dto.UserDTO;
-import com.finance.model.Transaction;
 import com.finance.model.User;
 import com.finance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -35,9 +34,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO updateUser(UserDTO userDTO) InvalidUserException {
+    public UserDTO updateUser(UserDTO userDTO) throws InvalidUserException {
         User existingUser = userRepository.findById(userDTO.getUserId())
-                .orElseThrow(() -> new UserService.UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         existingUser.setUserName(userDTO.getUserName());
         existingUser.setEmail(userDTO.getEmail());
@@ -46,10 +45,26 @@ public class UserService {
         return convertToDto(updatedUser);
     }
 
-    @Transactional
+    public void deleteUser(UUID userId) throws InvalidUserException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new InvalidUserException("User not Found"));
+
+        userRepository.delete(user);
+    }
+
+    public List<UserDTO> getuserById(UUID userId, String userName, String firstName, String lastName, String email) {
+        return List.of();
+    }
+
     public class UserNotFoundException extends RuntimeException {
         public UserNotFoundException(String message) {
             super(message);
+        }
+    }
+
+    public class InvalidUserException extends Exception {
+        public InvalidUserException(String userNotFound) {
+            super(userNotFound);
         }
     }
 
