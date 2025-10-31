@@ -53,3 +53,7 @@ spring:
       mode: always
       platform: postgresql
       data-locations: classpath:data.sql
+  
+  jwt:
+    secret: ${JWT_SECRET:superlongrandombase64string1234567890abcdefghijklmnopqrstuvwxyz}
+    expiration: 86400000
